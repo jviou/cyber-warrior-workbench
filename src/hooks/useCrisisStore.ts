@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { CrisisExercise, TimerState, JournalEvent } from '@/types/crisis';
 import { crisisStorage } from '@/lib/storage';
 import { createInitialExercise } from '@/lib/initial-data';
+import { CrisisConfig } from '@/components/modals/ModeSelector';
 
 export function useCrisisStore() {
   const [exercise, setExercise] = useState<CrisisExercise | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [timerState, setTimerState] = useState<TimerState>({
     isRunning: false,
     pausedDuration: 0,
@@ -16,10 +18,9 @@ export function useCrisisStore() {
     const savedData = crisisStorage.load();
     if (savedData) {
       setExercise(savedData);
+      setIsInitialized(true);
     } else {
-      const initialData = createInitialExercise();
-      setExercise(initialData);
-      crisisStorage.save(initialData);
+      setIsInitialized(true);
     }
   }, []);
 
@@ -72,6 +73,13 @@ export function useCrisisStore() {
     } : null);
   }, [exercise]);
 
+  // Create new exercise
+  const createExercise = useCallback((config: CrisisConfig) => {
+    const newExercise = createInitialExercise(config);
+    setExercise(newExercise);
+    crisisStorage.save(newExercise);
+  }, []);
+
   // Update functions
   const updateExercise = useCallback((updates: Partial<CrisisExercise>) => {
     setExercise(prev => prev ? { ...prev, ...updates } : null);
@@ -95,11 +103,13 @@ export function useCrisisStore() {
 
   return {
     exercise,
+    isInitialized,
     timerState,
     startTimer,
     pauseTimer,
     resetTimer,
     addJournalEvent,
+    createExercise,
     updateExercise,
     exportData,
     setExercise

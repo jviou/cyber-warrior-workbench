@@ -12,7 +12,9 @@ export type Role =
 
 export type SeverityLevel = 'low' | 'moderate' | 'high' | 'critical';
 
-export type PhaseId = 'P1' | 'P2' | 'P3' | 'P4';
+export type CrisisMode = 'exercise' | 'real';
+
+export type PhaseId = string; // Now flexible
 
 export interface Phase {
   id: PhaseId;
@@ -20,15 +22,29 @@ export interface Phase {
   checklist: ChecklistItem[];
   notes: string;
   injects: Inject[];
+  order: number;
+  customizable?: boolean;
 }
 
 export interface ChecklistItem {
   id: string;
   text: string;
   owner?: Role;
+  assignedUser?: string; // specific user name
   dueAt?: string; // ISO
   status: 'todo' | 'doing' | 'done' | 'n/a';
   evidence?: string[]; // file handles
+  attachments?: FileAttachment[];
+}
+
+export interface FileAttachment {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  content?: string; // base64 for small files
+  url?: string; // for external files
+  uploadedAt: string;
 }
 
 export interface Inject {
@@ -75,18 +91,24 @@ export interface Communication {
 
 export interface JournalEvent {
   id: string;
-  kind: 'action' | 'decision' | 'comm' | 'inject' | 'note';
+  kind: 'action' | 'decision' | 'comm' | 'inject' | 'note' | 'incident' | 'technical' | 'legal';
   refId?: string;
   at: string;
   summary: string;
   details?: string;
+  attachments?: FileAttachment[];
+  author?: Role | string;
+  category?: 'technical' | 'legal' | 'communication' | 'direction' | 'general';
+  severity?: SeverityLevel;
 }
 
 export interface CrisisExercise {
   id: string;
   title: string;
   description: string;
+  mode: CrisisMode;
   startedAt?: string;
+  endedAt?: string;
   severity: SeverityLevel;
   objectives: string[];
   rules: string[];
@@ -97,6 +119,25 @@ export interface CrisisExercise {
   communications: Communication[];
   journal: JournalEvent[];
   resources: Resource[];
+  users: CrisisUser[];
+  settings: CrisisSettings;
+}
+
+export interface CrisisUser {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  active: boolean;
+  lastSeen?: string;
+}
+
+export interface CrisisSettings {
+  encryptData: boolean;
+  autoSave: boolean;
+  notificationsEnabled: boolean;
+  timezone: string;
+  customPhases: boolean;
 }
 
 export interface Resource {

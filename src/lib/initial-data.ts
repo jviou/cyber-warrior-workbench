@@ -1,14 +1,16 @@
-import { CrisisExercise, Phase } from '@/types/crisis';
+import { CrisisExercise, Phase, CrisisMode } from '@/types/crisis';
+import { CrisisConfig } from '@/components/modals/ModeSelector';
 
-export function createInitialExercise(): CrisisExercise {
+export function createInitialExercise(config?: CrisisConfig): CrisisExercise {
   const now = new Date().toISOString();
   
   const phases: Phase[] = [
     {
       id: 'P1',
       title: 'Phase 1 - Détection',
+      order: 1,
       notes: '',
-      injects: [
+      injects: config?.mode === 'real' ? [] : [
         {
           id: 'inject-1',
           title: 'Alerte Antivirus',
@@ -53,8 +55,9 @@ export function createInitialExercise(): CrisisExercise {
     {
       id: 'P2',
       title: 'Phase 2 - Qualification',
+      order: 2,
       notes: '',
-      injects: [
+      injects: config?.mode === 'real' ? [] : [
         {
           id: 'inject-2',
           title: 'Confirmation Ransomware',
@@ -99,8 +102,9 @@ export function createInitialExercise(): CrisisExercise {
     {
       id: 'P3',
       title: 'Phase 3 - Remédiation',
+      order: 3,
       notes: '',
-      injects: [
+      injects: config?.mode === 'real' ? [] : [
         {
           id: 'inject-3',
           title: 'Demande de Rançon',
@@ -151,6 +155,7 @@ export function createInitialExercise(): CrisisExercise {
     {
       id: 'P4',
       title: 'Phase 4 - Retour d\'Expérience',
+      order: 4,
       notes: '',
       injects: [],
       checklist: [
@@ -196,9 +201,10 @@ export function createInitialExercise(): CrisisExercise {
 
   return {
     id: 'crisis-' + Date.now(),
-    title: 'Exercice de Crise Cyber - Ransomware',
-    description: 'Exercice de simulation d\'une attaque par ransomware selon les recommandations ANSSI',
-    severity: 'moderate',
+    title: config?.title || 'Exercice de Crise Cyber - Ransomware',
+    description: config?.description || 'Exercice de simulation d\'une attaque par ransomware selon les recommandations ANSSI',
+    mode: config?.mode || 'exercise',
+    severity: config?.severity || 'moderate',
     objectives: [
       'Tester la réactivité de l\'équipe de crise',
       'Valider les procédures de gestion d\'incident',
@@ -245,6 +251,36 @@ export function createInitialExercise(): CrisisExercise {
         content: 'Document interne décrivant les étapes de gestion d\'incident',
         addedAt: now
       }
-    ]
+    ],
+    users: [
+      {
+        id: 'user-1',
+        name: 'Jean Dupont',
+        email: 'jean.dupont@entreprise.fr',
+        role: 'RSSI',
+        active: true
+      },
+      {
+        id: 'user-2',
+        name: 'Marie Martin',
+        email: 'marie.martin@entreprise.fr',
+        role: 'ITOps',
+        active: true
+      },
+      {
+        id: 'user-3',
+        name: 'Pierre Durand',
+        email: 'pierre.durand@entreprise.fr',
+        role: 'DPO',
+        active: true
+      }
+    ],
+    settings: {
+      encryptData: false,
+      autoSave: true,
+      notificationsEnabled: true,
+      timezone: 'Europe/Paris',
+      customPhases: false
+    }
   };
 }

@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { Clock, Play, Pause, Square, Download, AlertTriangle } from "lucide-react";
+import { Clock, Play, Pause, Square, Download, AlertTriangle, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { SeverityLevel } from "@/types/crisis";
+import { SeverityLevel, CrisisMode } from "@/types/crisis";
 
 interface CrisisHeaderProps {
   title: string;
   severity: SeverityLevel;
+  mode: CrisisMode;
   onExport: () => void;
   timerState: {
     isRunning: boolean;
@@ -29,6 +30,7 @@ const severityConfig = {
 export function CrisisHeader({
   title,
   severity,
+  mode,
   onExport,
   timerState,
   onTimerStart,
@@ -77,10 +79,17 @@ export function CrisisHeader({
         <div className="flex items-center gap-4">
           <SidebarTrigger />
           <div className="flex items-center gap-3">
-            <AlertTriangle className="h-6 w-6 text-primary" />
+            {mode === 'real' ? (
+              <Shield className="h-6 w-6 text-destructive" />
+            ) : (
+              <AlertTriangle className="h-6 w-6 text-primary" />
+            )}
             <h1 className="heading-crisis">{title}</h1>
             <Badge className={severityStyle.className}>
               {severityStyle.label}
+            </Badge>
+            <Badge variant={mode === 'real' ? 'destructive' : 'secondary'}>
+              {mode === 'real' ? 'RÉEL' : 'EXERCICE'}
             </Badge>
           </div>
         </div>
@@ -94,46 +103,48 @@ export function CrisisHeader({
             </span>
           </div>
 
-          {/* Exercise Timer */}
-          <div className="flex items-center gap-3 border-l border-border pl-6">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Durée:</span>
-              <span className="text-sm font-mono font-medium">
-                {formatElapsed(elapsedTime)}
-              </span>
-            </div>
-            
-            <div className="flex items-center gap-1">
-              {!timerState.isRunning ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={onTimerStart}
-                  className="h-8 w-8 p-0"
-                >
-                  <Play className="h-3 w-3" />
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={onTimerPause}
-                  className="h-8 w-8 p-0"
-                >
-                  <Pause className="h-3 w-3" />
-                </Button>
-              )}
+          {/* Timer - Exercise mode only */}
+          {mode === 'exercise' && (
+            <div className="flex items-center gap-3 border-l border-border pl-6">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Durée:</span>
+                <span className="text-sm font-mono font-medium">
+                  {formatElapsed(elapsedTime)}
+                </span>
+              </div>
               
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onTimerReset}
-                className="h-8 w-8 p-0"
-              >
-                <Square className="h-3 w-3" />
-              </Button>
+              <div className="flex items-center gap-1">
+                {!timerState.isRunning ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onTimerStart}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Play className="h-3 w-3" />
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onTimerPause}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Pause className="h-3 w-3" />
+                  </Button>
+                )}
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onTimerReset}
+                  className="h-8 w-8 p-0"
+                >
+                  <Square className="h-3 w-3" />
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Export Button */}
           <Button

@@ -11,14 +11,16 @@ interface CrisisLayoutProps {
 export function CrisisLayout({ children }: CrisisLayoutProps) {
   const { 
     exercise, 
+    isInitialized,
     timerState, 
     startTimer, 
     pauseTimer, 
     resetTimer,
-    exportData 
+    exportData,
+    createExercise
   } = useCrisisStore();
 
-  if (!exercise) {
+  if (!isInitialized) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -29,6 +31,10 @@ export function CrisisLayout({ children }: CrisisLayoutProps) {
     );
   }
 
+  if (!exercise) {
+    return children; // Let the mode selector handle this
+  }
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -37,6 +43,7 @@ export function CrisisLayout({ children }: CrisisLayoutProps) {
           <CrisisHeader
             title={exercise.title}
             severity={exercise.severity}
+            mode={exercise.mode}
             timerState={timerState}
             onTimerStart={startTimer}
             onTimerPause={pauseTimer}
