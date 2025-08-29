@@ -5,3 +5,33 @@ services:
     ports:
       - "4173:4173"
     restart: unless-stopped
+    depends_on:
+      - api
+
+  api:
+    build: ./api
+    container_name: crisis-api
+    environment:
+      DATABASE_URL: "postgresql://crisis:crisis@db:5432/crisis?schema=public"
+      API_KEY: "${API_KEY:-changeme}"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:16
+    container_name: crisis-db
+    environment:
+      POSTGRES_DB: "crisis"
+      POSTGRES_USER: "crisis"
+      POSTGRES_PASSWORD: "crisis"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
