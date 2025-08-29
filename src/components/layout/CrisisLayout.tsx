@@ -22,7 +22,6 @@ export function CrisisLayout({ children }: CrisisLayoutProps) {
     resetExercise,
   } = useCrisisStore();
 
-  // Contrôle d’ouverture de la modale “Configuration de la Crise”
   const [showSelector, setShowSelector] = useState(false);
 
   if (!isInitialized) {
@@ -38,7 +37,7 @@ export function CrisisLayout({ children }: CrisisLayoutProps) {
     );
   }
 
-  // Si aucune session : on laisse la page courante rendre le contenu (ex: Home + modale)
+  // Sans session : on laisse la page afficher ce qu’elle veut (ex. Home + modale)
   if (!exercise) {
     return children;
   }
@@ -48,34 +47,33 @@ export function CrisisLayout({ children }: CrisisLayoutProps) {
       <div className="min-h-screen flex w-full">
         <CrisisSidebar />
         <div className="flex-1 flex flex-col">
-          {/* Header d'origine, avec un bouton "Changer de mode" placé en haut à droite */}
-          <div className="relative">
-            <CrisisHeader
-              title={exercise.title}
-              severity={exercise.severity}
-              mode={exercise.mode}
-              timerState={timerState}
-              onTimerStart={startTimer}
-              onTimerPause={pauseTimer}
-              onTimerReset={resetTimer}
-              onExport={exportData}
+          {/* Header d’origine intact */}
+          <CrisisHeader
+            title={exercise.title}
+            severity={exercise.severity}
+            mode={exercise.mode}
+            timerState={timerState}
+            onTimerStart={startTimer}
+            onTimerPause={pauseTimer}
+            onTimerReset={resetTimer}
+            onExport={exportData}
+          />
+
+          {/* Bouton FIXE en haut à droite (au-dessus du header si besoin) */}
+          <div className="fixed top-3 right-4 z-50">
+            <ModeButton
+              onClick={() => {
+                resetExercise();
+                setShowSelector(true);
+              }}
             />
-            <div className="absolute right-4 top-3">
-              <ModeButton
-                onClick={() => {
-                  // On réinitialise la session et on ouvre la modale de choix
-                  resetExercise();
-                  setShowSelector(true);
-                }}
-              />
-            </div>
           </div>
 
           <main className="flex-1 overflow-auto">{children}</main>
         </div>
       </div>
 
-      {/* Modale de sélection montée uniquement quand on clique sur "Changer de mode" */}
+      {/* Modale de sélection affichée au clic */}
       {showSelector && <ModeSelector open={true} />}
     </SidebarProvider>
   );
