@@ -1,7 +1,10 @@
-FROM node:20-alpine
+FROM node:20-bookworm-slim
 WORKDIR /api
 
-RUN apk add --no-cache python3 make g++
+# Dépendances build + OpenSSL (nécessaire pour Prisma)
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl python3 make g++ \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 RUN npm install
@@ -15,5 +18,6 @@ COPY tsconfig.json ./
 ENV PORT=8080
 EXPOSE 8080
 
-# crée/maj le schéma puis build + start
+# Crée/maj le schéma puis build + start
 CMD sh -c "npx prisma db push && npm run build && npm run start"
+EOF
