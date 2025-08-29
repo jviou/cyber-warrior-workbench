@@ -6,42 +6,14 @@ services:
       - "4173:4173"
     restart: unless-stopped
     depends_on:
-      - postgrest
+      - crisis-api
 
-  postgrest:
-    image: postgrest/postgrest:v12.2.3
-    container_name: crisis-postgrest
-    environment:
-      PGRST_DB_URI: "postgres://crisis:crisis@db:5432/crisis"
-      PGRST_DB_SCHEMAS: "public"
-      PGRST_DB_ANON_ROLE: "web_anon"
-      PGRST_SERVER_PORT: "8080"
-      # utile si tu proxifies /api -> postgrest côté Cosmos :
-      PGRST_OPENAPI_SERVER_PROXY_URI: "https://crisis-app.capucins-angers.fr/api"
+  crisis-api:
+    image: typicode/json-server:latest
+    container_name: crisis-api
+    command: ["--host","0.0.0.0","--port","8080","/data/db.json"]
+    volumes:
+      - ./db.json:/data/db.json
     ports:
       - "8080:8080"
-    depends_on:
-      db:
-        condition: service_healthy
     restart: unless-stopped
-
-  db:
-    image: postgres:16
-    container_name: crisis-db
-    environment:
-      POSTGRES_DB: "crisis"
-      POSTGRES_USER: "crisis"
-      POSTGRES_PASSWORD: "crisis"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"   # retire ce mapping si inutile depuis l'hôte
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U crisis -d crisis"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    restart: unless-stopped
-
-volumes:
-  pgdata:
