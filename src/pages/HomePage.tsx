@@ -1,130 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Clock } from "lucide-react";
+import { Target, Users, FileText, Upload, Clock } from "lucide-react";
 import { useCrisisStore } from "@/hooks/useCrisisStore";
 
 export default function HomePage() {
   const { exercise } = useCrisisStore();
+
   if (!exercise) return null;
 
-  // ----- MODE RÉEL : page épurée, orientée gestion d'incident -----
-  if (exercise.mode === "real") {
-    return (
-      <div className="container mx-auto p-6 space-y-6">
-        {/* En-tête incident */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="space-y-1">
-            <h1 className="heading-crisis text-3xl">{exercise.title}</h1>
-            <p className="text-lg text-muted-foreground">{exercise.description}</p>
-            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <Badge variant="destructive">Gravité : Critique</Badge>
-              <span>•</span>
-              <Badge>Statut : En cours</Badge>
-              <span>•</span>
-              <Clock className="h-4 w-4" />
-              <span>Temps écoulé : 00:42:18</span>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline">Nouvelle action</Button>
-            <Button variant="outline">Ajouter événement</Button>
-            <Button>Exporter</Button>
-          </div>
-        </div>
-
-        {/* KPI rapides */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-primary">00:42:18</div>
-              <p className="text-sm text-muted-foreground">Temps écoulé</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-primary">{exercise.actions.length}</div>
-              <p className="text-sm text-muted-foreground">Actions ouvertes</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-primary">{exercise.communications.length}</div>
-              <p className="text-sm text-muted-foreground">Comms envoyées</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-primary">
-                {/* Placeholder services impactés si tu ajoutes ce champ plus tard */}
-                {exercise.phases.length}
-              </div>
-              <p className="text-sm text-muted-foreground">Indicateur global</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Vue d’ensemble */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Vue d’ensemble</CardTitle>
-            <CardDescription>Résumé, services impactés et équipe</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4 md:grid-cols-3">
-            <div className="md:col-span-2">
-              <div className="text-sm">
-                Chiffrement détecté sur \\files01. Containment en cours. (Texte éditable plus tard)
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Users className="h-4 w-4" />
-                <span className="font-medium text-sm">Équipe & rôles</span>
-              </div>
-              <div className="space-y-1 text-sm">
-                <div>Responsable de crise — Toi</div>
-                <div>RSSI — (à définir)</div>
-                <div>Comms — (à définir)</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Placeholders pour les prochaines features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="md:col-span-2">
-            <CardHeader><CardTitle>Journal (Timeline)</CardTitle></CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              Saisie rapide + liste d’événements (à venir)
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader><CardTitle>Actions</CardTitle></CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              Kanban À faire / En cours / Fait (à venir)
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
-            <CardHeader><CardTitle>Communications</CardTitle></CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              Modèles + historique (à venir)
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader><CardTitle>Preuves & pièces jointes</CardTitle></CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              Upload/lien + métadonnées (à venir)
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  // ----- MODE EXERCICE : on garde l’affichage existant -----
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Welcome Section */}
@@ -138,6 +22,7 @@ export default function HomePage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5 text-primary" />
               Objectifs de l'Exercice
             </CardTitle>
             <CardDescription>
@@ -162,6 +47,7 @@ export default function HomePage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-primary" />
               Règles du Jeu
             </CardTitle>
             <CardDescription>
@@ -186,6 +72,7 @@ export default function HomePage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
               Contacts Clés
             </CardTitle>
             <CardDescription>
@@ -213,6 +100,7 @@ export default function HomePage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5 text-primary" />
               Import de Contenu
             </CardTitle>
             <CardDescription>
@@ -224,6 +112,7 @@ export default function HomePage() {
               Glissez-déposez votre fichier PowerPoint pour automatiquement peupler les phases et checklists.
             </p>
             <Button variant="outline" className="w-full" disabled>
+              <Upload className="mr-2 h-4 w-4" />
               Importer le PowerPoint
               <Badge variant="secondary" className="ml-2">Bientôt</Badge>
             </Button>

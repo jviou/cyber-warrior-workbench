@@ -1,5 +1,4 @@
-// src/App.tsx
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,27 +15,35 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 function AppContent() {
-  const { exercise, isInitialized } = useCrisisStore();
+  const { exercise, isInitialized, createExercise } = useCrisisStore();
+  const [showModeSelector, setShowModeSelector] = useState(false);
 
   useEffect(() => {
-    // init si besoin
-  }, []);
+    if (isInitialized && !exercise) {
+      setShowModeSelector(true);
+    }
+  }, [isInitialized, exercise]);
+
+  const handleModeSelect = (mode: any, config: any) => {
+    createExercise(config);
+    setShowModeSelector(false);
+  };
 
   return (
     <>
-      {/* Si pas de session ET store initialisé, on affiche la modale de choix */}
-      {!exercise && isInitialized && (
-        <div className="mx-auto max-w-6xl px-4 py-6">
-          <ModeSelector open={true} />
-        </div>
-      )}
-
-      <Routes>
-        <Route path="/" element={<CrisisLayout><HomePage /></CrisisLayout>} />
-        <Route path="/journal" element={<CrisisLayout><JournalPage /></CrisisLayout>} />
-        <Route path="/communications" element={<CrisisLayout><CommunicationsPage /></CrisisLayout>} />
-        <Route path="*" element={<CrisisLayout><NotFound /></CrisisLayout>} />
-      </Routes>
+      <ModeSelector 
+        open={showModeSelector} 
+        onSelect={handleModeSelect}
+      />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<CrisisLayout><HomePage /></CrisisLayout>} />
+          <Route path="/journal" element={<CrisisLayout><JournalPage /></CrisisLayout>} />
+          <Route path="/communications" element={<CrisisLayout><CommunicationsPage /></CrisisLayout>} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<CrisisLayout><NotFound /></CrisisLayout>} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
@@ -46,9 +53,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
+      <AppContent />
     </TooltipProvider>
   </QueryClientProvider>
 );
