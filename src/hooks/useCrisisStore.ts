@@ -3,6 +3,7 @@ import { CrisisExercise, TimerState, JournalEvent } from '@/types/crisis';
 import { crisisStorage } from '@/lib/storage';
 import { createInitialExercise } from '@/lib/initial-data';
 import { CrisisConfig } from '@/components/modals/ModeSelector';
+type Mode = "exercise" | "real";
 
 export function useCrisisStore() {
   const [exercise, setExercise] = useState<CrisisExercise | null>(null);
@@ -101,6 +102,20 @@ export function useCrisisStore() {
     URL.revokeObjectURL(url);
   }, [exercise]);
 
+// Permet de basculer de mode à chaud
+const setMode = (mode: Mode) => {
+  setExercise((prev) => (prev ? { ...prev, mode } : prev));
+};
+
+// Réinitialise la session et (si dispo) efface le stockage local
+const resetExercise = () => {
+  setExercise(null);
+  if (crisisStorage?.clear) {
+    try { crisisStorage.clear(); } catch { /* ignore */ }
+  }
+};
+
+  
   return {
     exercise,
     isInitialized,
@@ -112,6 +127,8 @@ export function useCrisisStore() {
     createExercise,
     updateExercise,
     exportData,
+    setMode,
+    resetExercise,
     setExercise
   };
 }
