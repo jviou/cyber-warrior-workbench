@@ -1,0 +1,7 @@
+services:
+  crisis-app:
+    build: .
+    container_name: crisis-app
+    ports:
+      - "4173:4173"
+    restart: unless-stopped
