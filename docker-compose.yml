@@ -9,9 +9,10 @@ services:
       - crisis-api
 
   crisis-api:
-    image: typicode/json-server:latest
+    image: ghcr.io/typicode/json-server:latest
     container_name: crisis-api
-    command: ["--host","0.0.0.0","--port","8080","/data/db.json"]
+    # on précise la commande complète (compatible quel que soit l'ENTRYPOINT)
+    command: ["json-server","--host","0.0.0.0","--port","8080","/data/db.json"]
     volumes:
       - ./db.json:/data/db.json
     ports:
