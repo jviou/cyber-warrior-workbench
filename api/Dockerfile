@@ -1,11 +1,10 @@
 FROM node:20-alpine
 WORKDIR /api
 
-# deps tools (si jamais)
 RUN apk add --no-cache python3 make g++
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 COPY prisma ./prisma
 RUN npx prisma generate
@@ -16,5 +15,5 @@ COPY tsconfig.json ./
 ENV PORT=8080
 EXPOSE 8080
 
-# migration auto au démarrage + start
-CMD sh -c "npx prisma migrate deploy && npm run build && npm run start"
+# crée/maj le schéma puis build + start
+CMD sh -c "npx prisma db push && npm run build && npm run start"
