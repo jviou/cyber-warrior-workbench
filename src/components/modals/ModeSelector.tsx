@@ -1,229 +1,130 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+// src/components/modals/ModeSelector.tsx
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Play, Shield, FileText, Users } from "lucide-react";
-import { CrisisMode, SeverityLevel } from "@/types/crisis";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useCrisisStore } from "@/hooks/useCrisisStore";
 
-interface ModeSelectorProps {
-  open: boolean;
-  onSelect: (mode: CrisisMode, config: CrisisConfig) => void;
-}
-
-export interface CrisisConfig {
+export type CrisisConfig = {
+  mode: "exercise" | "real";
   title: string;
   description: string;
-  severity: SeverityLevel;
-  mode: CrisisMode;
-}
+  severity: "low" | "moderate" | "high" | "critical";
+};
 
-export function ModeSelector({ open, onSelect }: ModeSelectorProps) {
-  const [selectedMode, setSelectedMode] = useState<CrisisMode | null>(null);
-  const [config, setConfig] = useState<CrisisConfig>({
-    title: '',
-    description: '',
-    severity: 'moderate' as SeverityLevel,
-    mode: 'exercise' as CrisisMode
-  });
+type Props = {
+  open?: boolean;
+  onSelect?: () => void; // optionnel
+};
 
-  const handleModeSelect = (mode: CrisisMode) => {
-    setSelectedMode(mode);
-    setConfig(prev => ({
-      ...prev,
-      mode,
-      title: mode === 'exercise' 
-        ? 'Exercice de Crise Cyber' 
-        : 'Gestion de Crise - Incident Réel',
-      description: mode === 'exercise'
-        ? 'Simulation d\'exercice de gestion de crise cybersécurité'
-        : 'Gestion en temps réel d\'un incident de cybersécurité'
-    }));
+export function ModeSelector({ open = true, onSelect }: Props) {
+  const navigate = useNavigate();
+  const { createExercise } = useCrisisStore();
+
+  // état d’ouverture local (pour s’assurer que la modale s’affiche)
+  const [visible, setVisible] = useState(open);
+
+  // champs du formulaire
+  const [mode, setMode] = useState<CrisisConfig["mode"]>("real");
+  const [title, setTitle] = useState("Gestion de Crise - Incident Réel");
+  const [description, setDescription] = useState("Gestion en temps réel d'un incident de cybersécurité");
+  const [severity, setSeverity] = useState<CrisisConfig["severity"]>("moderate");
+
+  useEffect(() => setVisible(open), [open]);
+
+  const start = () => {
+    const cfg: CrisisConfig = { mode, title: title.trim(), description: description.trim(), severity };
+    // >>> CREE LA SESSION <<<
+    createExercise(cfg);
+    // ferme la modale et retourne à l’accueil
+    setVisible(false);
+    onSelect?.();
+    navigate("/");
   };
 
-  const handleStart = () => {
-    if (config.title.trim()) {
-      onSelect(selectedMode!, config);
-    }
-  };
+  if (!visible) return null;
 
   return (
-    <Dialog open={open}>
-      <DialogContent className="max-w-4xl">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">Configuration de la Crise</DialogTitle>
-          <DialogDescription>
-            Sélectionnez le mode de fonctionnement et configurez votre session
-          </DialogDescription>
-        </DialogHeader>
-
-        {!selectedMode ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-6">
-            {/* Mode Exercice */}
-            <Card 
-              className="cursor-pointer transition-all hover:shadow-lg border-2 hover:border-primary"
-              onClick={() => handleModeSelect('exercise')}
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <Play className="h-6 w-6 text-primary" />
-                  </div>
-                  Mode Exercice
-                </CardTitle>
-                <CardDescription>
-                  Simulation contrôlée avec injects programmés
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">Scénarios pré-définis</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">Timer et injects automatiques</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">Environnement sécurisé</span>
-                  </div>
-                  <Badge variant="secondary" className="w-fit">
-                    Formation & Test
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Mode Réel */}
-            <Card 
-              className="cursor-pointer transition-all hover:shadow-lg border-2 hover:border-destructive"
-              onClick={() => handleModeSelect('real')}
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-destructive/10">
-                    <Shield className="h-6 w-6 text-destructive" />
-                  </div>
-                  Mode Réel
-                </CardTitle>
-                <CardDescription>
-                  Gestion d'incident en temps réel
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">Journal temps réel</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">Gestion d'équipe</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">Exports légaux</span>
-                  </div>
-                  <Badge variant="destructive" className="w-fit">
-                    Incident Actif
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        ) : (
-          <div className="space-y-6 py-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="title">Titre de la Session</Label>
-                  <Input
-                    id="title"
-                    value={config.title}
-                    onChange={(e) => setConfig(prev => ({ ...prev, title: e.target.value }))}
-                    placeholder="Nom de la crise ou exercice"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={config.description}
-                    onChange={(e) => setConfig(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Description de l'incident ou exercice"
-                    rows={3}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="severity">Niveau de Gravité</Label>
-                  <select
-                    id="severity"
-                    value={config.severity}
-                    onChange={(e) => setConfig(prev => ({ ...prev, severity: e.target.value as SeverityLevel }))}
-                    className="w-full p-2 border border-input rounded-md bg-background"
-                  >
-                    <option value="low">Faible</option>
-                    <option value="moderate">Modéré</option>
-                    <option value="high">Élevé</option>
-                    <option value="critical">Critique</option>
-                  </select>
-                </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+      <div className="max-w-3xl w-full">
+        <Card>
+          <CardHeader>
+            <CardTitle>Configuration de la Crise</CardTitle>
+            <CardDescription>
+              Sélectionnez le mode de fonctionnement et configurez votre session
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-2">
+            {/* Colonne gauche : formulaire */}
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Mode</label>
+                <Select value={mode} onValueChange={(v: any) => setMode(v)}>
+                  <SelectTrigger><SelectValue placeholder="Choisir un mode" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="exercise">Exercice</SelectItem>
+                    <SelectItem value="real">Réel</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div className="space-y-4">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg">
-                      Mode Sélectionné: {selectedMode === 'exercise' ? 'Exercice' : 'Réel'}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {selectedMode === 'exercise' ? (
-                      <div className="space-y-2 text-sm">
-                        <p>• Injects programmés automatiques</p>
-                        <p>• Phases pré-définies ANSSI</p>
-                        <p>• Environnement de formation</p>
-                        <p>• Chronomètre d'exercice</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-2 text-sm">
-                        <p>• Saisie manuelle d'événements</p>
-                        <p>• Phases personnalisables</p>
-                        <p>• Documentation légale</p>
-                        <p>• Export compliance</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Titre de la Session</label>
+                <Input value={title} onChange={e => setTitle(e.target.value)} />
+              </div>
+
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Description</label>
+                <Textarea rows={3} value={description} onChange={e => setDescription(e.target.value)} />
+              </div>
+
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Niveau de Gravité</label>
+                <Select value={severity} onValueChange={(v: any) => setSeverity(v)}>
+                  <SelectTrigger><SelectValue placeholder="Gravité" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Faible</SelectItem>
+                    <SelectItem value="moderate">Modéré</SelectItem>
+                    <SelectItem value="high">Élevé</SelectItem>
+                    <SelectItem value="critical">Critique</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <Button variant="outline" onClick={() => setVisible(false)}>Retour</Button>
+                <Button onClick={start}>Démarrer</Button>
               </div>
             </div>
 
-            <div className="flex justify-between">
-              <Button 
-                variant="outline" 
-                onClick={() => setSelectedMode(null)}
-              >
-                Retour
-              </Button>
-              <Button 
-                onClick={handleStart}
-                disabled={!config.title.trim()}
-                className="gap-2"
-              >
-                <Play className="h-4 w-4" />
-                Démarrer
-              </Button>
+            {/* Colonne droite : résumé du mode */}
+            <div className="rounded-lg border p-4">
+              <div className="font-semibold mb-2">
+                Mode Sélectionné: {mode === "real" ? "Réel" : "Exercice"}
+              </div>
+              {mode === "real" ? (
+                <ul className="text-sm list-disc pl-5 space-y-1">
+                  <li>Saisie manuelle d’événements</li>
+                  <li>Phases personnalisables</li>
+                  <li>Documentation légale</li>
+                  <li>Export compliance</li>
+                </ul>
+              ) : (
+                <ul className="text-sm list-disc pl-5 space-y-1">
+                  <li>Scénarios pré-définis</li>
+                  <li>Timer & injects automatiques</li>
+                  <li>Environnement sécurisé</li>
+                </ul>
+              )}
             </div>
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }
+
+export default ModeSelector;
