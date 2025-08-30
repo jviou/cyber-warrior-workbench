@@ -40,6 +40,11 @@ function AppContent() {
           <Route path="/" element={<CrisisLayout><HomePage /></CrisisLayout>} />
           <Route path="/journal" element={<CrisisLayout><JournalPage /></CrisisLayout>} />
           <Route path="/communications" element={<CrisisLayout><CommunicationsPage /></CrisisLayout>} />
+          <Route path="/actions" element={<CrisisLayout><div className="p-6"><h1>Actions - En développement</h1></div></CrisisLayout>} />
+          <Route path="/decisions" element={<CrisisLayout><div className="p-6"><h1>Décisions - En développement</h1></div></CrisisLayout>} />
+          <Route path="/indicators" element={<CrisisLayout><div className="p-6"><h1>Indicateurs - En développement</h1></div></CrisisLayout>} />
+          <Route path="/resources" element={<CrisisLayout><div className="p-6"><h1>Ressources - En développement</h1></div></CrisisLayout>} />
+          <Route path="/phase/:phaseId" element={<CrisisLayout><div className="p-6"><h1>Phase - En développement</h1></div></CrisisLayout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<CrisisLayout><NotFound /></CrisisLayout>} />
         </Routes>

@@ -15,41 +15,16 @@ export function createInitialExercise(config?: CrisisConfig): CrisisExercise {
           id: 'inject-1',
           title: 'Alerte Antivirus',
           description: 'Alerte déclenchée par l\'antivirus sur plusieurs postes de travail',
-          plannedAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // +10 min
+          plannedAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
           phaseId: 'P1'
         }
       ],
       checklist: [
-        {
-          id: 'p1-1',
-          text: 'Vérifier les alertes de sécurité en cours',
-          status: 'todo',
-          owner: 'RSSI'
-        },
-        {
-          id: 'p1-2',
-          text: 'Analyser les logs système',
-          status: 'todo',
-          owner: 'ITOps'
-        },
-        {
-          id: 'p1-3',
-          text: 'Identifier la source de l\'incident',
-          status: 'todo',
-          owner: 'RSSI'
-        },
-        {
-          id: 'p1-4',
-          text: 'Évaluer l\'ampleur de l\'incident',
-          status: 'todo',
-          owner: 'IncidentManager'
-        },
-        {
-          id: 'p1-5',
-          text: 'Notifier l\'équipe de crise',
-          status: 'todo',
-          owner: 'IncidentManager'
-        }
+        { id: 'p1-1', text: 'Vérifier les alertes de sécurité en cours', category: 'operational', status: 'todo', owner: 'RSSI', attachments: [] },
+        { id: 'p1-2', text: 'Analyser les logs système', category: 'operational', status: 'todo', owner: 'ITOps', attachments: [] },
+        { id: 'p1-3', text: 'Identifier la source de l\'incident', category: 'operational', status: 'todo', owner: 'RSSI', attachments: [] },
+        { id: 'p1-4', text: 'Évaluer l\'ampleur de l\'incident', category: 'strategic', status: 'todo', owner: 'IncidentManager', attachments: [] },
+        { id: 'p1-5', text: 'Notifier l\'équipe de crise', category: 'strategic', status: 'todo', owner: 'IncidentManager', attachments: [] }
       ]
     },
     {
@@ -62,41 +37,16 @@ export function createInitialExercise(config?: CrisisConfig): CrisisExercise {
           id: 'inject-2',
           title: 'Confirmation Ransomware',
           description: 'Analyse confirmant la présence d\'un ransomware sur le réseau',
-          plannedAt: new Date(Date.now() + 20 * 60 * 1000).toISOString(), // +20 min
+          plannedAt: new Date(Date.now() + 20 * 60 * 1000).toISOString(),
           phaseId: 'P2'
         }
       ],
       checklist: [
-        {
-          id: 'p2-1',
-          text: 'Classifier l\'incident selon la grille ANSSI',
-          status: 'todo',
-          owner: 'RSSI'
-        },
-        {
-          id: 'p2-2',
-          text: 'Identifier les systèmes impactés',
-          status: 'todo',
-          owner: 'ITOps'
-        },
-        {
-          id: 'p2-3',
-          text: 'Évaluer le niveau de criticité',
-          status: 'todo',
-          owner: 'IncidentManager'
-        },
-        {
-          id: 'p2-4',
-          text: 'Déterminer la stratégie de réponse',
-          status: 'todo',
-          owner: 'IncidentManager'
-        },
-        {
-          id: 'p2-5',
-          text: 'Activer la cellule de crise',
-          status: 'todo',
-          owner: 'Exec'
-        }
+        { id: 'p2-1', text: 'Classifier l\'incident selon la grille ANSSI', category: 'operational', status: 'todo', owner: 'RSSI', attachments: [] },
+        { id: 'p2-2', text: 'Identifier les systèmes impactés', category: 'operational', status: 'todo', owner: 'ITOps', attachments: [] },
+        { id: 'p2-3', text: 'Évaluer le niveau de criticité', category: 'strategic', status: 'todo', owner: 'IncidentManager', attachments: [] },
+        { id: 'p2-4', text: 'Déterminer la stratégie de réponse', category: 'strategic', status: 'todo', owner: 'IncidentManager', attachments: [] },
+        { id: 'p2-5', text: 'Activer la cellule de crise', category: 'strategic', status: 'todo', owner: 'Exec', attachments: [] }
       ]
     },
     {
@@ -109,47 +59,17 @@ export function createInitialExercise(config?: CrisisConfig): CrisisExercise {
           id: 'inject-3',
           title: 'Demande de Rançon',
           description: 'Réception d\'un message de demande de rançon avec menaces de publication',
-          plannedAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // +30 min
+          plannedAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
           phaseId: 'P3'
         }
       ],
       checklist: [
-        {
-          id: 'p3-1',
-          text: 'Isoler les systèmes compromis',
-          status: 'todo',
-          owner: 'ITOps'
-        },
-        {
-          id: 'p3-2',
-          text: 'Préserver les preuves forensiques',
-          status: 'todo',
-          owner: 'RSSI'
-        },
-        {
-          id: 'p3-3',
-          text: 'Activer le plan de continuité',
-          status: 'todo',
-          owner: 'IncidentManager'
-        },
-        {
-          id: 'p3-4',
-          text: 'Communiquer en interne',
-          status: 'todo',
-          owner: 'Comms'
-        },
-        {
-          id: 'p3-5',
-          text: 'Notifier les autorités (ANSSI, CNIL)',
-          status: 'todo',
-          owner: 'Legal'
-        },
-        {
-          id: 'p3-6',
-          text: 'Restaurer les systèmes critiques',
-          status: 'todo',
-          owner: 'ITOps'
-        }
+        { id: 'p3-1', text: 'Isoler les systèmes compromis', category: 'operational', status: 'todo', owner: 'ITOps', attachments: [] },
+        { id: 'p3-2', text: 'Préserver les preuves forensiques', category: 'operational', status: 'todo', owner: 'RSSI', attachments: [] },
+        { id: 'p3-3', text: 'Activer le plan de continuité', category: 'strategic', status: 'todo', owner: 'IncidentManager', attachments: [] },
+        { id: 'p3-4', text: 'Communiquer en interne', category: 'strategic', status: 'todo', owner: 'Comms', attachments: [] },
+        { id: 'p3-5', text: 'Notifier les autorités (ANSSI, CNIL)', category: 'strategic', status: 'todo', owner: 'Legal', attachments: [] },
+        { id: 'p3-6', text: 'Restaurer les systèmes critiques', category: 'operational', status: 'todo', owner: 'ITOps', attachments: [] }
       ]
     },
     {
@@ -159,42 +79,12 @@ export function createInitialExercise(config?: CrisisConfig): CrisisExercise {
       notes: '',
       injects: [],
       checklist: [
-        {
-          id: 'p4-1',
-          text: 'Documenter la chronologie complète',
-          status: 'todo',
-          owner: 'IncidentManager'
-        },
-        {
-          id: 'p4-2',
-          text: 'Analyser les points de défaillance',
-          status: 'todo',
-          owner: 'RSSI'
-        },
-        {
-          id: 'p4-3',
-          text: 'Identifier les améliorations',
-          status: 'todo',
-          owner: 'IncidentManager'
-        },
-        {
-          id: 'p4-4',
-          text: 'Mettre à jour les procédures',
-          status: 'todo',
-          owner: 'RSSI'
-        },
-        {
-          id: 'p4-5',
-          text: 'Planifier les formations',
-          status: 'todo',
-          owner: 'Exec'
-        },
-        {
-          id: 'p4-6',
-          text: 'Communication post-incident',
-          status: 'todo',
-          owner: 'Comms'
-        }
+        { id: 'p4-1', text: 'Documenter la chronologie complète', category: 'strategic', status: 'todo', owner: 'IncidentManager', attachments: [] },
+        { id: 'p4-2', text: 'Analyser les points de défaillance', category: 'operational', status: 'todo', owner: 'RSSI', attachments: [] },
+        { id: 'p4-3', text: 'Identifier les améliorations', category: 'strategic', status: 'todo', owner: 'IncidentManager', attachments: [] },
+        { id: 'p4-4', text: 'Mettre à jour les procédures', category: 'operational', status: 'todo', owner: 'RSSI', attachments: [] },
+        { id: 'p4-5', text: 'Planifier les formations', category: 'strategic', status: 'todo', owner: 'Exec', attachments: [] },
+        { id: 'p4-6', text: 'Communication post-incident', category: 'strategic', status: 'todo', owner: 'Comms', attachments: [] }
       ]
     }
   ];
@@ -243,13 +133,6 @@ export function createInitialExercise(config?: CrisisConfig): CrisisExercise {
         type: 'link',
         url: 'https://www.ssi.gouv.fr/',
         addedAt: now
-      },
-      {
-        id: 'resource-2',
-        title: 'Procédure interne de gestion d\'incident',
-        type: 'note',
-        content: 'Document interne décrivant les étapes de gestion d\'incident',
-        addedAt: now
       }
     ],
     users: [
@@ -258,20 +141,6 @@ export function createInitialExercise(config?: CrisisConfig): CrisisExercise {
         name: 'Jean Dupont',
         email: 'jean.dupont@entreprise.fr',
         role: 'RSSI',
-        active: true
-      },
-      {
-        id: 'user-2',
-        name: 'Marie Martin',
-        email: 'marie.martin@entreprise.fr',
-        role: 'ITOps',
-        active: true
-      },
-      {
-        id: 'user-3',
-        name: 'Pierre Durand',
-        email: 'pierre.durand@entreprise.fr',
-        role: 'DPO',
         active: true
       }
     ],

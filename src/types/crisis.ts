@@ -14,7 +14,7 @@ export type SeverityLevel = 'low' | 'moderate' | 'high' | 'critical';
 
 export type CrisisMode = 'exercise' | 'real';
 
-export type PhaseId = string; // Now flexible
+export type PhaseId = string;
 
 export interface Phase {
   id: PhaseId;
@@ -29,11 +29,12 @@ export interface Phase {
 export interface ChecklistItem {
   id: string;
   text: string;
+  category: 'strategic' | 'operational';
   owner?: Role;
-  assignedUser?: string; // specific user name
-  dueAt?: string; // ISO
+  assignedUser?: string;
+  dueAt?: string;
   status: 'todo' | 'doing' | 'done' | 'n/a';
-  evidence?: string[]; // file handles
+  evidence?: string[];
   attachments?: FileAttachment[];
 }
 
@@ -42,8 +43,8 @@ export interface FileAttachment {
   name: string;
   type: string;
   size: number;
-  content?: string; // base64 for small files
-  url?: string; // for external files
+  content?: string;
+  url?: string;
   uploadedAt: string;
 }
 
@@ -51,8 +52,8 @@ export interface Inject {
   id: string;
   title: string;
   description?: string;
-  plannedAt?: string; // ISO
-  releasedAt?: string; // ISO when triggered
+  plannedAt?: string;
+  releasedAt?: string;
   attachments?: string[];
   phaseId?: PhaseId;
 }
@@ -62,6 +63,7 @@ export interface ActionItem {
   title: string;
   description?: string;
   owner?: Role;
+  assignedUser?: string;
   priority: 'low' | 'med' | 'high';
   status: 'todo' | 'doing' | 'done';
   dueAt?: string;
@@ -81,12 +83,13 @@ export interface Decision {
 
 export interface Communication {
   id: string;
-  audience: 'Interne' | 'Direction' | 'DPO' | 'CERT' | 'Partenaires' | string;
+  audience: 'Direction' | 'DPO' | 'ANSSI' | 'CERT' | 'CNIL' | 'Partenaires' | 'Collaborateurs' | string;
   subject: string;
   message: string;
   author?: Role;
   approvedBy?: Role;
   sentAt?: string;
+  template?: boolean;
 }
 
 export interface JournalEvent {
